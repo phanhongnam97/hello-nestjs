@@ -6,22 +6,24 @@ import {
   Param,
   Post,
   Put,
-  Req,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
+import { CatsService } from './cats.service';
+import { Cat } from './interfaces/cat.interface';
 
 @Controller('cats')
 export class CatsController {
+  constructor(private catsService: CatsService) {}
+
   @Get()
-  findAll(@Req() request: Request): string {
-    return 'This action returns all cats';
+  findAll(): Promise<Cat[]> {
+    return Promise.resolve(this.catsService.findAll());
   }
 
   @Post()
-  async create(@Body() createCatDto: CreateCatDto): Promise<string> {
-    return 'This action adds new cat';
+  async create(@Body() createCatDto: CreateCatDto): Promise<void> {
+    return this.catsService.create(createCatDto);
   }
 
   @Get(':id')
